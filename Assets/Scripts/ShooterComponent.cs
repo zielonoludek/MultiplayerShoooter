@@ -20,16 +20,14 @@ public class ShooterComponent : NetworkBehaviour
 
         playerActions.Player.Shoot.performed += context =>
         {
-            if (!IsOwner || !Application.isFocused)
-            {
-                Bullet b = Instantiate(bulletObj);
-                b.Setup(gameObject, Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue()));
-            }
+            SpawnBullet(0,0);
         };
     }
 
     private void SpawnBullet(ushort oldValue, ushort newValue)
     {
-        //Bullet b = Instantiate(bulletObj);
+        if (!IsOwner || !Application.isFocused) return;
+        Bullet b = Instantiate(bulletObj);
+        b.Setup(gameObject, Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue()));
     }
 }

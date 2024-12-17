@@ -40,7 +40,11 @@ public class PlayerController : NetworkBehaviour
 
     private void Update()
     {
-        if (!IsOwner || !Application.isFocused) return;
+        if (!IsOwner || !Application.isFocused)
+        {
+            rb.velocity = new Vector2(0, rb.velocity.y);
+            return;
+        }
         Flip();
         rb.velocity = new Vector2(movementInput * speed, rb.velocity.y);
     }

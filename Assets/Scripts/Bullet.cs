@@ -5,12 +5,11 @@ using UnityEngine.InputSystem;
 
 public class Bullet : NetworkBehaviour
 {
-    private Vector3 target;
     private Rigidbody2D rb;
     private GameObject parent;
     private float speed = 1000;
 
-    public void Setup(GameObject parent, Vector3 targer)
+    public void Setup(GameObject parent, Vector3 target)
     {
         rb = GetComponent<Rigidbody2D>();
         this.parent = parent;
