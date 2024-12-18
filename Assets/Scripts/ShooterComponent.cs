@@ -1,5 +1,4 @@
-﻿using System.Globalization;
-using Unity.Netcode;
+﻿using Unity.Netcode;
 using UnityEngine.InputSystem;
 using UnityEngine;
 

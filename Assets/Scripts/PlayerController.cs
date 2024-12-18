@@ -11,6 +11,9 @@ public class PlayerController : NetworkBehaviour
 
     private bool canJump = false;
 
+    [SerializeField] private GameObject sprite;
+    [SerializeField] private Sprite player2look;
+
     private Rigidbody2D rb;
     private HealthComponent healthComponent;
     private PlayerInputActions playerActions;
@@ -69,7 +72,7 @@ public class PlayerController : NetworkBehaviour
     }
     private void Flip()
     {
-        if (rb.velocity.x > 0 ) transform.localScale = new Vector2(Mathf.Abs(transform.localScale.x), transform.localScale.y) ;
-        else if (rb.velocity.x < 0) transform.localScale = new Vector2(-Mathf.Abs(transform.localScale.x), transform.localScale.y) ;
+        if (rb.velocity.x > 0 ) sprite.transform.localScale = new Vector2(Mathf.Abs(sprite.transform.localScale.x), sprite.transform.localScale.y) ;
+        else if (rb.velocity.x < 0) sprite.transform.localScale = new Vector2(-Mathf.Abs(sprite.transform.localScale.x), sprite.transform.localScale.y) ;
     }
 }

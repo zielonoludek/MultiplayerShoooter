@@ -1,28 +1,45 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using Unity.Netcode;
 
 public class HealthComponent : NetworkBehaviour
 {
     [SerializeField] private int maxHealth = 5;
-    [SerializeField]  private int health;
+    [SerializeField] private Slider healthBar;
 
-    public int MaxHealth { get { return maxHealth; } }
-    public int Health { get { return health; } }
+    private NetworkVariable<int> networkHealth = new NetworkVariable<int>();
+
+    public int MaxHealth => maxHealth;
 
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
-        SetMaxHealth();
+        networkHealth.OnValueChanged += (oldValue, newValue) => UpdateHealthBar(newValue);
+        if (IsServer)
+        {
+            networkHealth.Value = maxHealth;
+        }
+        UpdateHealthBar(networkHealth.Value);
     }
-    public void SetMaxHealth() => health = MaxHealth;
+
     public void ApplyDamage()
     {
-        health--;
+        if (IsServer)
+        {
+            networkHealth.Value--;
+        }
     }
+
     public void Heal()
     {
-        health++;
+        if (IsServer)
+        {
+            networkHealth.Value++;
+        }
+    }
+
+    private void UpdateHealthBar(int currentHealth)
+    {
+        healthBar.value = (float)currentHealth / maxHealth;
     }
 }

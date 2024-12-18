@@ -24,6 +24,14 @@ public class Bullet : NetworkBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (!IsOwner) return;
+
+        if (collision.gameObject == parent.gameObject) return;
+
+        if (collision.TryGetComponent<HealthComponent>(out var healthComponent))
+        {
+            healthComponent.ApplyDamage();
+        }
+
         parent.RequestDestroy(gameObject);
     }
 }
