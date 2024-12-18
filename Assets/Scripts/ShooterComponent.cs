@@ -1,14 +1,13 @@
-using UnityEngine;
+﻿using System.Globalization;
 using Unity.Netcode;
 using UnityEngine.InputSystem;
-using static UnityEngine.GraphicsBuffer;
-
+using UnityEngine;
 
 public class ShooterComponent : NetworkBehaviour
 {
     private PlayerInputActions playerActions;
     private NetworkVariable<ushort> ammoNum = new NetworkVariable<ushort>(5);
-    [SerializeField] private Bullet bulletObj;
+    [SerializeField] private GameObject bulletObj;
 
     public override void OnNetworkSpawn()
     {
@@ -16,18 +15,42 @@ public class ShooterComponent : NetworkBehaviour
 
         playerActions = new PlayerInputActions();
         playerActions.Player.Enable();
-        if (!IsServer) ammoNum.OnValueChanged += SpawnBullet;
-
         playerActions.Player.Shoot.performed += context =>
         {
-            SpawnBullet(0,0);
+            if (!IsOwner || !Application.isFocused) return;
+
+            Vector3 mouseWorldPosition = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
+            mouseWorldPosition.z = 0;
+            SpawnBulletServerRpc(mouseWorldPosition);
         };
     }
 
-    private void SpawnBullet(ushort oldValue, ushort newValue)
+    [ServerRpc]
+    private void SpawnBulletServerRpc(Vector3 mouseWorldPosition)
     {
-        if (!IsOwner || !Application.isFocused) return;
-        Bullet b = Instantiate(bulletObj);
-        b.Setup(gameObject, Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue()));
+        GameObject b = Instantiate(bulletObj, transform.position, Quaternion.identity);
+        var bulletNetworkObject = b.GetComponent<NetworkObject>();
+        bulletNetworkObject.Spawn();
+
+        b.GetComponent<Bullet>().parent = this;
+        b.GetComponent<Bullet>().Setup(mouseWorldPosition);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void DestroyServerRpc(ulong networkObjectId)
+    {
+        if (NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(networkObjectId, out var networkObject))
+        {
+            networkObject.Despawn();
+            Destroy(networkObject.gameObject);
+        }
+    }
+
+    public void RequestDestroy(GameObject gameObject)
+    {
+        if (gameObject.TryGetComponent<NetworkObject>(out var networkObject))
+        {
+            DestroyServerRpc(networkObject.NetworkObjectId);
+        }
     }
 }
