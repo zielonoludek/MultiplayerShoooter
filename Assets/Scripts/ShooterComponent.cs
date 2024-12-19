@@ -8,21 +8,27 @@ public class ShooterComponent : NetworkBehaviour
     private NetworkVariable<ushort> ammoNum = new NetworkVariable<ushort>(5);
     [SerializeField] private GameObject bulletObj;
 
+    private ChatManager chatManager;
+
     public override void OnNetworkSpawn()
     {
         base.OnNetworkSpawn();
 
         playerActions = new PlayerInputActions();
         playerActions.Player.Enable();
+
+        chatManager = FindObjectOfType<ChatManager>();
+
         playerActions.Player.Shoot.performed += context =>
         {
-            if (!IsOwner || !Application.isFocused) return;
+            if (!IsOwner || !Application.isFocused || (chatManager != null && chatManager.IsChatFocused)) return;
 
             Vector3 mouseWorldPosition = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
             mouseWorldPosition.z = 0;
             SpawnBulletServerRpc(mouseWorldPosition);
         };
     }
+
 
     [ServerRpc]
     private void SpawnBulletServerRpc(Vector3 mouseWorldPosition)

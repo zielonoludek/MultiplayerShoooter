@@ -26,7 +26,7 @@ public class HealthComponent : NetworkBehaviour
     {
         if (IsServer)
         {
-            networkHealth.Value--;
+            if (networkHealth.Value > 0) networkHealth.Value--;
         }
     }
 
@@ -34,7 +34,7 @@ public class HealthComponent : NetworkBehaviour
     {
         if (IsServer)
         {
-            networkHealth.Value++;
+            if (networkHealth.Value < maxHealth) networkHealth.Value++;
         }
     }
 

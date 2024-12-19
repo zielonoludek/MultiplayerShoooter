@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 3296176620857964759}
   - component: {fileID: 3093682641980958316}
   - component: {fileID: -6707225994798046642}
+  - component: {fileID: 1886871504193089562}
   m_Layer: 0
   m_Name: Apple
   m_TagString: Heal
@@ -120,8 +121,20 @@ MonoBehaviour:
   UseQuaternionCompression: 0
   UseHalfFloatPrecision: 0
   InLocalSpace: 0
-  Interpolate: 1
+  Interpolate: 0
   SlerpPosition: 0
+--- !u!114 &1886871504193089562
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6447759834559163689}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84de5f9128733084b9e4f08d928b10b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8064069730093210369
 GameObject:
   m_ObjectHideFlags: 0

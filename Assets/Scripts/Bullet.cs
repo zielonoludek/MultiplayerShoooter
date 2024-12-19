@@ -27,11 +27,6 @@ public class Bullet : NetworkBehaviour
 
         if (collision.gameObject == parent.gameObject) return;
 
-        if (collision.TryGetComponent<HealthComponent>(out var healthComponent))
-        {
-            healthComponent.ApplyDamage();
-        }
-
-        parent.RequestDestroy(gameObject);
-    }
+        if (!collision.gameObject.CompareTag("Heal")) parent.RequestDestroy(gameObject);
+    } 
 }
